@@ -16,10 +16,15 @@ public class ExecutionEngineService {
 
     private final PlannerService plannerService;
     private final EventBus eventBus;
+    private final PolicyEngineService policyEngineService;
+    private final ApprovalEngineService approvalEngineService;
 
-    public ExecutionEngineService(PlannerService plannerService, EventBus eventBus) {
+    public ExecutionEngineService(PlannerService plannerService, EventBus eventBus, 
+                                  PolicyEngineService policyEngineService, ApprovalEngineService approvalEngineService) {
         this.plannerService = plannerService;
         this.eventBus = eventBus;
+        this.policyEngineService = policyEngineService;
+        this.approvalEngineService = approvalEngineService;
     }
 
     public CorrelationId dispatchIntent(Intent intent, UserContext userContext) {
@@ -36,18 +41,25 @@ public class ExecutionEngineService {
                 userContext
         );
 
-        EventEnvelope<ExecutionRequest> envelope = new EventEnvelope<>(
-                UUID.randomUUID().toString(),
-                "ExecutionRequestCreated",
-                "1.0",
-                "morpheus-core",
-                Instant.now(),
-                correlationId,
-                null,
-                request
-        );
+        PolicyEngineService.PolicyResult policyResult = policyEngineService.evaluate(plan.capability());
 
-        eventBus.publish(envelope);
+        if (policyResult.decision() == PolicyEngineService.PolicyDecision.APPROVED) {
+            EventEnvelope<ExecutionRequest> envelope = new EventEnvelope<>(
+                    UUID.randomUUID().toString(),
+                    "ExecutionRequestCreated",
+                    "1.0",
+                    "morpheus-core",
+                    Instant.now(),
+                    correlationId,
+                    null,
+                    request
+            );
+            eventBus.publish(envelope);
+        } else if (policyResult.decision() == PolicyEngineService.PolicyDecision.PENDING_APPROVAL) {
+            approvalEngineService.createApproval(request);
+        } else {
+            throw new IllegalStateException("Execution request denied by policy engine: " + policyResult.reason());
+        }
 
         return correlationId;
     }

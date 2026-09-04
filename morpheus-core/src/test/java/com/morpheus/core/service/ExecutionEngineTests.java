@@ -16,6 +16,8 @@ class ExecutionEngineTests {
     private AgentRegistryService agentRegistry;
     private PlannerService plannerService;
     private LocalEventBusImpl eventBus;
+    private PolicyEngineService policyEngineService;
+    private ApprovalEngineService approvalEngineService;
     private ExecutionEngineService executionEngine;
 
     @BeforeEach
@@ -24,7 +26,9 @@ class ExecutionEngineTests {
         agentRegistry = new AgentRegistryService(capabilityRegistry);
         plannerService = new PlannerService(agentRegistry, capabilityRegistry);
         eventBus = new LocalEventBusImpl();
-        executionEngine = new ExecutionEngineService(plannerService, eventBus);
+        policyEngineService = new PolicyEngineService();
+        approvalEngineService = new ApprovalEngineService(eventBus);
+        executionEngine = new ExecutionEngineService(plannerService, eventBus, policyEngineService, approvalEngineService);
     }
 
     @Test

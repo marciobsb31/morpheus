@@ -19,6 +19,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/health", "/api/v1/version").permitAll()
                 .requestMatchers("/api/v1/agents/**", "/api/v1/capabilities/**").permitAll()
                 .requestMatchers("/api/v1/intent/**").permitAll()
+                .requestMatchers("/api/v1/approvals/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             );

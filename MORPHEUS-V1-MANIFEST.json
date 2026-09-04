@@ -1,0 +1,12 @@
+{
+  "project": "Morpheus",
+  "version": "1.0.0-spec",
+  "delivery": 10,
+  "generated_at": "2026-09-03",
+  "canonical_ai_entrypoint": ".ai/BOOTSTRAP.md",
+  "technology_stack": ".ai/standards/TECHNOLOGY_STACK.md",
+  "release_plan": "docs/roadmap/MORPHEUS_V1_RELEASE_PLAN.md",
+  "file_count": 689,
+  "markdown_count": 685,
+  "status": "architecture-and-documentation-complete-ready-for-implementation"
+}

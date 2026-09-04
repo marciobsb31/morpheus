@@ -1,0 +1,30 @@
+{
+  "delivery": 8,
+  "name": "Security, Audit & Governance",
+  "base": "Delivery 07",
+  "agents": [
+    "security-agent",
+    "identity-agent",
+    "permission-agent",
+    "approval-agent",
+    "audit-agent",
+    "secrets-agent",
+    "policy-agent",
+    "trust-agent"
+  ],
+  "security_docs": [
+    "SECURITY_ARCHITECTURE.md",
+    "ZERO_TRUST_MODEL.md",
+    "IDENTITY_AND_AUTH.md",
+    "AUTHORIZATION_MODEL.md",
+    "APPROVAL_MODEL.md",
+    "AUDIT_MODEL.md",
+    "SECRETS_MANAGEMENT.md",
+    "PROMPT_INJECTION_DEFENSE.md",
+    "PLUGIN_SECURITY.md",
+    "INCIDENT_RESPONSE.md",
+    "PRIVACY_MODEL.md",
+    "SECURE_DEVELOPMENT_LIFECYCLE.md"
+  ],
+  "file_count": 590
+}

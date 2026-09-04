@@ -1,0 +1,17 @@
+.idea/
+*.iml
+.env
+.env.*
+!.env.example
+secrets/
+logs/
+data/
+tmp/
+.DS_Store
+Thumbs.db
+__pycache__/
+.venv/
+target/
+build/
+dist/
+node_modules/

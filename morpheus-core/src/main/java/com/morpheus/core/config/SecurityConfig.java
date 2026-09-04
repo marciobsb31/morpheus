@@ -18,6 +18,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/health", "/api/v1/version").permitAll()
                 .requestMatchers("/api/v1/agents/**", "/api/v1/capabilities/**").permitAll()
+                .requestMatchers("/api/v1/intent/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .anyRequest().authenticated()
             );

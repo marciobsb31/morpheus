@@ -1,22 +1,21 @@
 spring:
   application:
     name: morpheus-core
-  profiles:
-    active: dev
 
-server:
-  port: 8080
+  datasource:
+    url: jdbc:postgresql://localhost:5432/morpheus
+    username: postgres
+    password: postgrespassword
+    driver-class-name: org.postgresql.Driver
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-  endpoint:
-    health:
-      show-details: always
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 
-logging:
-  level:
-    com.morpheus: DEBUG
-    org.springframework: INFO
+  flyway:
+    enabled: true
+    baseline-on-migrate: true

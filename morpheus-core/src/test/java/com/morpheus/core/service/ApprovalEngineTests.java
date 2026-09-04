@@ -18,6 +18,7 @@ class ApprovalEngineTests {
     private LocalEventBusImpl eventBus;
     private PolicyEngineService policyEngineService;
     private ApprovalEngineService approvalEngineService;
+    private AuditService auditService;
     private ExecutionEngineService executionEngine;
 
     @BeforeEach
@@ -27,8 +28,14 @@ class ApprovalEngineTests {
         plannerService = new PlannerService(agentRegistry, capabilityRegistry);
         eventBus = new LocalEventBusImpl();
         policyEngineService = new PolicyEngineService();
-        approvalEngineService = new ApprovalEngineService(eventBus);
-        executionEngine = new ExecutionEngineService(plannerService, eventBus, policyEngineService, approvalEngineService);
+        auditService = new AuditService(null) {
+            @Override
+            public void log(AuditLog log) {
+                // mock behavior, do nothing
+            }
+        };
+        approvalEngineService = new ApprovalEngineService(eventBus, auditService);
+        executionEngine = new ExecutionEngineService(plannerService, eventBus, policyEngineService, approvalEngineService, auditService);
     }
 
     @Test

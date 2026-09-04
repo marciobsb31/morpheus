@@ -1,13 +1,13 @@
 package com.morpheus.core.service;
 
 import com.morpheus.core.domain.model.Approval;
+import com.morpheus.core.domain.model.AuditLog;
 import com.morpheus.core.domain.model.EventEnvelope;
 import com.morpheus.core.domain.model.ExecutionRequest;
 import com.morpheus.core.service.bus.EventBus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,9 +18,11 @@ public class ApprovalEngineService {
 
     private final ConcurrentHashMap<String, Approval> approvals = new ConcurrentHashMap<>();
     private final EventBus eventBus;
+    private final AuditService auditService;
 
-    public ApprovalEngineService(EventBus eventBus) {
+    public ApprovalEngineService(EventBus eventBus, AuditService auditService) {
         this.eventBus = eventBus;
+        this.auditService = auditService;
     }
 
     public Approval createApproval(ExecutionRequest request) {
@@ -75,6 +77,8 @@ public class ApprovalEngineService {
                 decidedBy
         );
         approvals.put(id, updated);
+        
+        logDecision(updated, "APPROVED", decidedBy);
 
         // Resume execution by publishing the original request
         EventEnvelope<ExecutionRequest> envelope = new EventEnvelope<>(
@@ -105,6 +109,23 @@ public class ApprovalEngineService {
         );
         approvals.put(id, updated);
         
-        // Could publish an ApprovalRejected event, but we'll keep it simple for now
+        logDecision(updated, "REJECTED", decidedBy);
+    }
+    
+    private void logDecision(Approval approval, String result, String decidedBy) {
+        AuditLog log = AuditLog.builder()
+                .id(UUID.randomUUID())
+                .timestamp(Instant.now())
+                .actorId(decidedBy)
+                .agentId(approval.request().agentId().value())
+                .capability(approval.request().capabilityId().value())
+                .decision("MANUAL_INTERVENTION")
+                .policyVersion("1.0")
+                .risk("HIGH")
+                .approvalId(approval.id())
+                .correlationId(approval.request().correlationId().value())
+                .result(result)
+                .build();
+        auditService.log(log);
     }
 }

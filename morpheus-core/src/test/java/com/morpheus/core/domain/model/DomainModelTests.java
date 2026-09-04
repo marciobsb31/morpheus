@@ -44,6 +44,7 @@ class DomainModelTests {
             "Agent description",
             Set.of(),
             Set.of(),
+            "HEALTHY",
             "ACTIVE"
         );
         assertEquals("agent-1", agent.id().value());

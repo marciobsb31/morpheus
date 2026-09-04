@@ -9,6 +9,7 @@ public record Agent(
         String description,
         Set<Capability> capabilities,
         Set<Permission> grantedPermissions,
+        String health,
         String status) {
     public Agent {
         if (id == null) throw new IllegalArgumentException("Agent id cannot be null");
